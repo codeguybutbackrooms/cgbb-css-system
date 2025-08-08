@@ -1,1 +1,2 @@
-.blr{filter:blur(var(--blr-amount,0.5rem))!important;}
+.blr{filter:blur(var(--blr-amount,0.5rem))!important;}.crcle-txt span {position: absolute; transform-origin: center center;}
+
