@@ -1,0 +1,1 @@
+document.querySelectorAll('.hover-prg').forEach(e=>{e.addEventListener('mousemove',t=>{let r=e.getBoundingClientRect();e.style.setProperty('--mx',((t.clientX-r.left)/r.width*100)+'%');e.style.setProperty('--my',((t.clientY-r.top)/r.height*100)+'%');e.style.setProperty('--r','70px')}),e.addEventListener('mouseleave',()=>{e.style.setProperty('--r','0px')})});
