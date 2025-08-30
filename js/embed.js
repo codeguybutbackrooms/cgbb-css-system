@@ -1,25 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JS Effects with Hover Modes</title>
-</head>
-<body>
-
-<div class="blr" data-blur="50" style="font-size:2rem; margin-bottom:20px;">Blurred Text</div>
-
-<div class="crcle-txt" data-text="Hello World" data-radius="60" style="margin-bottom:20px;"></div>
-
-<div class="hover-prg" hover-effect="directly" style="width:200px;height:200px;background:var(--galaxy-purple); display:flex; align-items:center; justify-content:center;">
-  Directly
-</div>
-
-<div class="hover-prg" hover-effect="smooth" style="width:200px;height:200px;background:var(--oceanfoam);margin-top:20px; display:flex; align-items:center; justify-content:center;">
-  Smooth
-</div>
-
-<script>
 (() => {
   // --- Inject CSS dynamically ---
   const css = `
@@ -126,7 +104,4 @@
   });
 
 })();
-</script>
 
-</body>
-</html>
