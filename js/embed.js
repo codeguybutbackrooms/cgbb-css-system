@@ -1,6 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Effects with Hover Modes</title>
+</head>
+<body>
+
+<div class="blr" data-blur="50" style="font-size:2rem; margin-bottom:20px;">Blurred Text</div>
+
+<div class="crcle-txt" data-text="Hello World" data-radius="60" style="margin-bottom:20px;"></div>
+
+<div class="hover-prg" hover-effect="directly" style="width:200px;height:200px;background:var(--galaxy-purple); display:flex; align-items:center; justify-content:center;">
+  Directly
+</div>
+
+<div class="hover-prg" hover-effect="smooth" style="width:200px;height:200px;background:var(--oceanfoam);margin-top:20px; display:flex; align-items:center; justify-content:center;">
+  Smooth
+</div>
+
+<script>
 (() => {
   // --- Inject CSS dynamically ---
   const css = `
+    :root {
+      --sunset-orange: #FD5E53;
+      --dragonfruit-pink: #f14d89;
+      --alien-green: #6bc417;
+      --mystic-teal: #454060;
+      --galaxy-purple: #8977db;
+      --oceanfoam: #8ddcdc;
+      --solar-flare-yellow: #eec23a;
+      --twilight-indigo: #113f5d;
+      --solar-cloud-gray: #929183;
+    }
     .blr { filter: blur(var(--blr-amount,0.5rem)) !important; }
     .crcle-txt span { position: absolute; transform-origin: center center; }
     .hover-prg {
@@ -14,7 +47,6 @@
       mask-image: radial-gradient(circle var(--r) at var(--mx) var(--my), rgba(0,0,0,1) calc(100% - var(--fade)), rgba(0,0,0,0) 100%);
       mask-repeat: no-repeat;
       mask-size: cover;
-      transition: --r 0.1s ease;
     }
   `;
   const style = document.createElement('style');
@@ -54,14 +86,47 @@
     });
   });
 
-  // --- Hover radial mask ---
+  // --- Hover radial mask with hover-effect ---
   document.querySelectorAll('.hover-prg').forEach(el => {
-    el.addEventListener('mousemove', e => {
-      const r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', ((e.clientX - r.left)/r.width*100)+'%');
-      el.style.setProperty('--my', ((e.clientY - r.top)/r.height*100)+'%');
-      el.style.setProperty('--r', '70px');
-    });
-    el.addEventListener('mouseleave', () => el.style.setProperty('--r','0px'));
+    const effect = el.getAttribute('hover-effect') || 'directly';
+
+    if (effect === 'directly') {
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty('--mx', ((e.clientX - r.left)/r.width*100)+'%');
+        el.style.setProperty('--my', ((e.clientY - r.top)/r.height*100)+'%');
+        el.style.setProperty('--r', '70px');
+      });
+      el.addEventListener('mouseleave', () => el.style.setProperty('--r','0px'));
+    }
+
+    if (effect === 'smooth') {
+      const maxBlur = 6; // px
+      let currentBlur = 0;
+      let targetBlur = 0;
+
+      const animate = () => {
+        currentBlur += (targetBlur - currentBlur) * 0.2;
+        el.style.filter = `blur(${currentBlur}px)`;
+        requestAnimationFrame(animate);
+      };
+      animate();
+
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left)/r.width;
+        const y = (e.clientY - r.top)/r.height;
+        const dx = Math.abs(x - 0.5);
+        const dy = Math.abs(y - 0.5);
+        const dist = Math.sqrt(dx*dx + dy*dy); // 0 center -> max ~0.707 corner
+        targetBlur = Math.min(dist / 0.707 * maxBlur, maxBlur);
+      });
+      el.addEventListener('mouseleave', () => targetBlur = 0);
+    }
   });
+
 })();
+</script>
+
+</body>
+</html>
