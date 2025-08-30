@@ -1,1 +1,67 @@
-document.querySelectorAll(".blr").forEach(el=>{let b=el.dataset.blur;if(b){let r=parseFloat(b)/100*1.5;el.style.setProperty("--blr-amount",r+"rem");}}); document.querySelectorAll('.crcle-txt').forEach(el=>{const t=el.getAttribute('data-text')||'',c=t.split(''),minR=40,a=360/c.length,r=Math.max(el.getAttribute('data-radius')||0,c.length*8,minR);el.style.position='relative';el.style.width=`${r*2}px`;el.style.height=`${r*2}px`;el.innerHTML='';c.forEach((ch,i)=>{const s=document.createElement('span'),ang=a*i-90,x=r+r*Math.cos(ang*Math.PI/180),y=r+r*Math.sin(ang*Math.PI/180);s.textContent=ch;s.style.position='absolute';s.style.left=`${x}px`;s.style.top=`${y}px`;s.style.transform=`translate(-50%,-50%) rotate(${ang+90}deg)`;el.appendChild(s);});}); document.querySelectorAll('.hover-prg').forEach(e=>{e.addEventListener('mousemove',t=>{let r=e.getBoundingClientRect();e.style.setProperty('--mx',((t.clientX-r.left)/r.width*100)+'%');e.style.setProperty('--my',((t.clientY-r.top)/r.height*100)+'%');e.style.setProperty('--r','70px')}),e.addEventListener('mouseleave',()=>{e.style.setProperty('--r','0px')})});
+(() => {
+  // --- Inject CSS dynamically ---
+  const css = `
+    .blr { filter: blur(var(--blr-amount,0.5rem)) !important; }
+    .crcle-txt span { position: absolute; transform-origin: center center; }
+    .hover-prg {
+      --mx:50%;
+      --my:50%;
+      --r:0px;
+      --fade:20px;
+      -webkit-mask-image: radial-gradient(circle var(--r) at var(--mx) var(--my), rgba(0,0,0,1) calc(100% - var(--fade)), rgba(0,0,0,0) 100%);
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: cover;
+      mask-image: radial-gradient(circle var(--r) at var(--mx) var(--my), rgba(0,0,0,1) calc(100% - var(--fade)), rgba(0,0,0,0) 100%);
+      mask-repeat: no-repeat;
+      mask-size: cover;
+      transition: --r 0.1s ease;
+    }
+  `;
+  const style = document.createElement('style');
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  // --- Blur effect ---
+  document.querySelectorAll(".blr").forEach(el => {
+    const b = el.dataset.blur;
+    if (b) el.style.setProperty("--blr-amount", parseFloat(b)/100*1.5 + "rem");
+  });
+
+  // --- Circular text ---
+  document.querySelectorAll(".crcle-txt").forEach(el => {
+    const text = el.getAttribute('data-text') || '';
+    const chars = text.split('');
+    const minR = 40;
+    const angleStep = 360 / chars.length;
+    const radius = Math.max(el.getAttribute('data-radius') || 0, chars.length * 8, minR);
+
+    el.style.position = 'relative';
+    el.style.width = `${radius*2}px`;
+    el.style.height = `${radius*2}px`;
+    el.innerHTML = '';
+
+    chars.forEach((ch, i) => {
+      const span = document.createElement('span');
+      const ang = angleStep * i - 90;
+      const x = radius + radius * Math.cos(ang * Math.PI/180);
+      const y = radius + radius * Math.sin(ang * Math.PI/180);
+      span.textContent = ch;
+      span.style.position = 'absolute';
+      span.style.left = `${x}px`;
+      span.style.top = `${y}px`;
+      span.style.transform = `translate(-50%, -50%) rotate(${ang+90}deg)`;
+      el.appendChild(span);
+    });
+  });
+
+  // --- Hover radial mask ---
+  document.querySelectorAll('.hover-prg').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', ((e.clientX - r.left)/r.width*100)+'%');
+      el.style.setProperty('--my', ((e.clientY - r.top)/r.height*100)+'%');
+      el.style.setProperty('--r', '70px');
+    });
+    el.addEventListener('mouseleave', () => el.style.setProperty('--r','0px'));
+  });
+})();
