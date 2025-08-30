@@ -6,3 +6,10 @@ Before to start, please copy the code and paste it in your HTML file.
 ```html
 <script src="https://cdn.jsdelivr.net/gh/codeguybutbackrooms/cgbb-css-system@main/js/embed.js"></script>
 ```
+
+## Blur Effect (`.blr`)
+It will apply a blur filter to any elements, customize intensity with `data-blur`
+Example usage:
+```html
+<p class="blr">Blur Text</p>
+```
